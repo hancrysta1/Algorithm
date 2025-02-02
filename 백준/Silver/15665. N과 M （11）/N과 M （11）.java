@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,7 +21,7 @@ public class Main {
         }
         Arrays.sort(arr);
         Set<Integer> toSet = new LinkedHashSet<>(Arrays.asList(arr));//배열->list->set으로 변환
-        arrList = new ArrayList<>(toSet);
+        arrList = new ArrayList<>(toSet);//인덱스로 접근 위해 다시 리스트로 변환
         //조합
         backtrack(new ArrayList<>());
         System.out.println(sb);
