@@ -1,54 +1,60 @@
-//package org.server;
 
-import java.util.*;
-import java.io.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+//친다=dfs
+//손에 든 계란이 깨졌거나 깨지지 않은 다른 계란이 없으면 치지 않고 넘어간다. --조건1
+//최근에 든 계란이 가장 오른쪽에 위치한 계란일 경우 계란을 치는 과정을 종료 --조건2
 public class Main {
     static int N;
-    static Map<String,int[]> eggs;
-    static int max;
+    static int[] force;
+    static int[] weight;
+    static int max=Integer.MIN_VALUE;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st= new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
-        eggs = new HashMap<>();
-        eggs.putIfAbsent("fragile",new int[N]);
-        eggs.putIfAbsent("weight",new int[N]);
+        force = new int[N];
+        weight = new int[N];
         for(int i=0;i<N;i++){
-            st= new StringTokenizer(br.readLine());
-            eggs.get("fragile")[i] = Integer.parseInt(st.nextToken());
-            eggs.get("weight")[i] = Integer.parseInt(st.nextToken());
+            st = new StringTokenizer(br.readLine());
+            force[i] = Integer.parseInt(st.nextToken());
+            weight[i] = Integer.parseInt(st.nextToken());
         }
-        //System.out.println(Arrays.toString(eggs.get("fragile")));
-        max=0;
-        backtrack(0);
+        //System.out.println(Arrays.toString(force));
+        dfs(0,0);//첫번째 계란으로 시작
         System.out.println(max);
     }
-    public static void backtrack(int start){//curr리스트 대신 인덱스로 dfs하는 방법
+    public static void dfs(int start,int cnt){//순열
         if(start==N){
-            int count=0;
-            for(int i=0;i<N;i++){
-                if(eggs.get("fragile")[i]<=0) count++;
-            }
-            max = Math.max(max,count);
+            max = Math.max(max,cnt);
             return;
         }
-        if(eggs.get("fragile")[start]<=0){
-            backtrack(start+1);
-            return;//깨진 계란이 다른 계란을 칠 수 있는 가능성을 차단
+        if(force[start]<=0){
+            dfs(start+1,cnt);
+            return;
         }
-        boolean isSmashed=false;
-        for(int i=0;i<N;i++){//다른 계란 돌기
-            if(i==start || eggs.get("fragile")[i]<=0 || eggs.get("fragile")[start]<=0) continue;//깨졌거나 자기 자신이면 패스
-            eggs.get("fragile")[start] -= eggs.get("weight")[i];
-            eggs.get("fragile")[i] -= eggs.get("weight")[start];
-            isSmashed = true;//다른 계란 침
-            backtrack(start+1);
-            eggs.get("fragile")[start] += eggs.get("weight")[i];
-            eggs.get("fragile")[i] += eggs.get("weight")[start];
+        boolean flag=false;
+        for(int i=0;i<N;i++){
+            if(start==i) continue;
+            if(force[i]<=0) continue;
+            force[start]-=weight[i];
+            force[i]-=weight[start];
+            flag=true;
+            int add = 0;
+            if(force[start]<=0) add++;
+            if(force[i]<=0) add++;
+            dfs(start+1,cnt+add);
+            force[start]+=weight[i];
+            force[i]+=weight[start];
         }
-        if(!isSmashed){
-            backtrack(start+1);
+        if(!flag){
+            dfs(start+1,cnt);
+            return;
         }
     }
 }
