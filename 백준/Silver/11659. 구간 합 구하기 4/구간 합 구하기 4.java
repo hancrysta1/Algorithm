@@ -1,23 +1,27 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+//package org.server;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
+
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int suNo = Integer.parseInt(st.nextToken());//tokenizer로 쪼갠 첫 원소 할당
-        int quizNo = Integer.parseInt(st.nextToken());
-        long[] S = new long[suNo+1];
-        st = new StringTokenizer(br.readLine());//reader로 다시 읽어
-        for(int i =1;i<=suNo;i++){
-            S[i] = S[i-1] + Integer.parseInt(st.nextToken());//합배열
-        }
-        for(int q=0;q<quizNo;q++){
-            st = new StringTokenizer(br.readLine());//reader로 다시 읽어
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        st = new StringTokenizer(br.readLine());
+        int[] sums = new int[N+1];
+        for(int s=1;s<=N;s++){
+            sums[s] = sums[s-1]+Integer.parseInt(st.nextToken());
+        }//합배열 미리 구하기
+        StringBuilder sb = new StringBuilder();
+        for(int z=0;z<M;z++){
+            st = new StringTokenizer(br.readLine());
             int i = Integer.parseInt(st.nextToken());
-            int j = Integer.parseInt(st.nextToken());//그때마다 입력 받아서
-            System.out.println(S[j] - S[i-1]);
+            int j = Integer.parseInt(st.nextToken());
+            sb.append(sums[j]-sums[i-1]).append("\n");
         }
+        System.out.println(sb.toString());
     }
+        
 }
